@@ -1,3 +1,4 @@
+# type: ignore
 import pygame
 
 # Base class for game objects
