@@ -5,8 +5,7 @@ from constants import PLAYER_RADIUS, PLAYER_TURN_SPEED, PLAYER_SPEED
 
 class Player(CircleShape):
     def __init__(self, x, y):
-        CircleShape.__init__(self, x, y, PLAYER_RADIUS)
-        pygame.sprite.Sprite.__init__(self)
+        super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
         self.rect = pygame.Rect(x - PLAYER_RADIUS, y - PLAYER_RADIUS, PLAYER_RADIUS * 2, PLAYER_RADIUS * 2)
         self.image = pygame.Surface((PLAYER_RADIUS * 2, PLAYER_RADIUS * 2), pygame.SRCALPHA)
@@ -14,11 +13,11 @@ class Player(CircleShape):
         pygame.draw.polygon(self.image, "white", self.triangle(), 2)
         
     def triangle(self):
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
+        forward = pygame.Vector2(0, -1).rotate(self.rotation)
+        right = forward.rotate(90)
         a = self.position + forward * self.radius
-        b = self.position - forward * self.radius - right
-        c = self.position - forward * self.radius + right
+        b = self.position - forward * self.radius - right * self.radius / 2
+        c = self.position - forward * self.radius + right * self.radius / 2
         return [a, b, c]
     
     def draw(self, screen):
@@ -40,9 +39,9 @@ class Player(CircleShape):
         if keys[pygame.K_d]:
             self.rotate(dt) # rotate right
         if keys[pygame.K_s]:
-            self.move(-dt) # move backwards
+            self.move(dt) # move backwards
         if keys[pygame.K_w]:
-            self.move(dt) # move forwards
+            self.move(-dt) # move forwards
 
     def move(self, dt):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
